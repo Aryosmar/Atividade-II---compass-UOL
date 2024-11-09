@@ -23,4 +23,4 @@ O projeto é estruturado em cinco arquivos principais:
 
 ### Clone o Repositório
 ```bash
-git clone https://github.com/Aryosmar/Blockchain---python.git
+https://github.com/Aryosmar/Atividade-II---compass-UOL.git
