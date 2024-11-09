@@ -3,8 +3,9 @@ import random
 import string
 
 class Transacao:
-    # Definindo o conjunto de endereços gerados
+    # Definindo o conjunto de endereços gerados e o histórico de transações
     enderecos_gerados = set()
+    historico_transacoes = {}
 
     def __init__(self, remetente, destinatario, valor, transacao_genesis=False):
         if not self.endereco_valido(remetente):
@@ -19,6 +20,10 @@ class Transacao:
         self.remetente = remetente
         self.destinatario = destinatario
         self.valor = valor
+
+        # Adicionar a transação ao histórico de cada endereço envolvido
+        Transacao.adicionar_ao_historico(remetente, self)
+        Transacao.adicionar_ao_historico(destinatario, self)
 
     def __str__(self):
         return f"{self.remetente} envia {self.valor} para {self.destinatario}"
@@ -38,4 +43,23 @@ class Transacao:
             # Garantir que o endereço não foi gerado anteriormente
             if endereco not in Transacao.enderecos_gerados:
                 Transacao.enderecos_gerados.add(endereco)
+                Transacao.historico_transacoes[endereco] = []  # Inicia o histórico para o novo endereço
                 return endereco
+
+    @staticmethod
+    def adicionar_ao_historico(endereco, transacao):
+        # Adiciona a transação ao histórico do endereço, criando o histórico se necessário
+        if endereco in Transacao.historico_transacoes:
+            Transacao.historico_transacoes[endereco].append(transacao)
+        else:
+            Transacao.historico_transacoes[endereco] = [transacao]
+
+    @staticmethod
+    def mostrar_historico(endereco):
+        if endereco in Transacao.historico_transacoes:
+            print(f"\n--- Histórico de Transações para o endereço {endereco} ---")
+            for transacao in Transacao.historico_transacoes[endereco]:
+                print(f"  {transacao}")
+            print("-------------------------------")
+        else:
+            print(f"Nenhuma transação encontrada para o endereço {endereco}.")

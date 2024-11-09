@@ -30,5 +30,7 @@ if __name__ == "__main__":
     else:
         print("\n--- Cadeia de blocos inválida! ---")
 
-    # Mostrar histórico de transações
-    minha_cadeia.mostrar_historico_transacoes(remetente1)
+    # Mostrar histórico de transações para todos os endereços
+    print("\nHistórico de Transações para todos os endereços:")
+    for endereco in Transacao.historico_transacoes:
+        Transacao.mostrar_historico(endereco)

@@ -5,13 +5,12 @@ class CadeiaDeBlocos:
     def __init__(self, dificuldade=1):
         self.dificuldade = dificuldade
         self.cadeia = [self.criar_bloco_genesis()]
-        self.historico_transacoes = {}
 
     def criar_bloco_genesis(self):
         # Criar uma transação de gênesis com endereços válidos de 48 caracteres alfanuméricos
         remetente = Transacao.gerar_endereco()
         destinatario = Transacao.gerar_endereco()
-        transacao_genesis = Transacao(remetente, destinatario, 1)  # Alterado para valor positivo
+        transacao_genesis = Transacao(remetente, destinatario, 1, transacao_genesis=True)  # Alterado para valor positivo
         return Bloco(0, [transacao_genesis], "0", self.dificuldade)
 
     def obter_ultimo_bloco(self):
@@ -21,17 +20,6 @@ class CadeiaDeBlocos:
         ultimo_bloco = self.obter_ultimo_bloco()
         novo_bloco = Bloco(len(self.cadeia), novas_transacoes, ultimo_bloco.hash_atual, self.dificuldade)
         self.cadeia.append(novo_bloco)
-
-        # Adicionar as transações ao histórico de cada endereço
-        for transacao in novas_transacoes:
-            if transacao.remetente not in self.historico_transacoes:
-                self.historico_transacoes[transacao.remetente] = []
-            if transacao.destinatario not in self.historico_transacoes:
-                self.historico_transacoes[transacao.destinatario] = []
-
-            # Adiciona a transação no histórico de remetente e destinatário
-            self.historico_transacoes[transacao.remetente].append(transacao)
-            self.historico_transacoes[transacao.destinatario].append(transacao)
 
         print(f"\n--- Bloco {novo_bloco.indice} adicionado ---")
         print(f"  Transações:")
@@ -72,12 +60,3 @@ class CadeiaDeBlocos:
             print(f"  Raiz Merkle: {bloco.arvore_merkle.raiz}")
             print(f"  Nonce: {bloco.nonce}")
             print("---------------------------")
-
-    def mostrar_historico_transacoes(self, endereco):
-        if endereco in self.historico_transacoes:
-            print(f"\n--- Histórico de Transações para o endereço {endereco} ---")
-            for transacao in self.historico_transacoes[endereco]:
-                print(f"  {transacao}")  # Exibe a transação de forma detalhada
-            print("-------------------------------")
-        else:
-            print(f"Nenhuma transação encontrada para o endereço {endereco}.")
